@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="anis-euphy">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MAL &amp; Blogger Sync Generator · Lorrainime</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root,
+[data-theme='anis-euphy'] {
+  --bg-base: #e7ecf1;
+  --bg-subtle: #dce3e9;
+  --bg-surface: #ffffff;
+  --border: #c5d0dc;
+  --text-main: #231d33;
+  --text-muted: #525b6b;
+  --accent-primary: #835ac1;
+  --accent-secondary: #68b29e;
+  --accent-highlight: #f4e6b1;
+  --accent-ink: #6e46ab;
+  --on-accent: #ffffff;
+  --on-secondary: #122621;
+  --on-highlight: #231d33;
+  --danger: #c2413b;
+  --radius: 6px;
+  --radius-sm: 4px;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --ease: cubic-bezier(.2, .7, .3, 1);
+  --dur: 160ms;
+}
+[data-theme='mimi-sheena'] {
+  --bg-base: #f2ebe7;
+  --bg-subtle: #e7dcd5;
+  --bg-surface: #ffffff;
+  --border: #d5c6bd;
+  --text-main: #3d534d;
+  --text-muted: #61736e;
+  --accent-primary: #da8990;
+  --accent-secondary: #b99271;
+  --accent-highlight: #f4dfe1;
+  --accent-ink: #b85f67;
+  --on-accent: #ffffff;
+  --on-secondary: #ffffff;
+  --on-highlight: #3d534d;
+  --radius: 6px;
+  --radius-sm: 4px;
+}
+[data-theme='hima-yori'] {
+  --bg-base: #eceef3;
+  --bg-subtle: #dfe2eb;
+  --bg-surface: #ffffff;
+  --border: #cbd0dc;
+  --text-main: #2a2c33;
+  --text-muted: #6c6c70;
+  --accent-primary: #f0777e;
+  --accent-secondary: #6b769e;
+  --accent-highlight: #f2bbb6;
+  --accent-ink: #d4555d;
+  --on-accent: #ffffff;
+  --on-secondary: #ffffff;
+  --on-highlight: #2a2c33;
+  --radius: 6px;
+  --radius-sm: 4px;
+}
+[data-theme='kininatteru'] {
+  --bg-base: #0d0d0f;
+  --bg-subtle: #1a1a1f;
+  --bg-surface: #141417;
+  --border: #2e2e34;
+  --text-main: #f4f4f6;
+  --text-muted: #9a9aa2;
+  --accent-primary: #a3ff00;
+  --accent-secondary: #a3ff00;
+  --accent-highlight: #1f2912;
+  --accent-ink: #a3ff00;
+  --on-accent: #0d0d0f;
+  --on-secondary: #0d0d0f;
+  --on-highlight: #a3ff00;
+  --radius: 0px;
+  --radius-sm: 0px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg-base); color: var(--text-main); font: 400 14.5px/1.55 var(--font-sans); -webkit-font-smoothing: antialiased; }
+a { color: var(--accent-ink); }
+[hidden] { display: none !important; }
+:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+.mono { font-family: var(--font-mono); }
+.wrap { max-width: 1360px; margin: 0 auto; padding: 0 20px; }
+
+.js-alert { background: #c2413b; color: #fff; padding: 12px 20px; font: 600 13px/1.5 var(--font-mono); text-align: center; }
+
+/* Header */
+.top { position: sticky; top: 0; z-index: 20; background: var(--bg-surface); border-bottom: 1px solid var(--border); border-top: 3px solid var(--accent-primary); }
+.top-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 56px; }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 17px; letter-spacing: -.015em; white-space: nowrap; }
+.brand-tag { font: 700 10px/1 var(--font-mono); letter-spacing: .14em; padding: 4px 6px; background: var(--accent-secondary); color: var(--on-secondary); border-radius: var(--radius-sm); }
+.brand-sub { color: var(--text-muted); font-weight: 600; font-size: 12px; }
+.top-actions { display: flex; align-items: center; gap: 10px; }
+
+.theme-switch { display: flex; align-items: center; gap: 7px; padding: 4px 7px; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--radius); }
+.swatch { position: relative; width: 18px; height: 18px; padding: 0; margin: 0; overflow: hidden; cursor: pointer; background: var(--a); border: 1px solid rgba(0, 0, 0, .2); border-radius: 50%; }
+.swatch::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 50%; background: var(--b); }
+.swatch[aria-pressed='true'] { outline: 2px solid var(--text-main); outline-offset: 2px; }
+
+/* Layout */
+.layout { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.95fr); gap: 24px; align-items: start; padding-top: 24px; padding-bottom: 48px; }
+.form-col { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.out-col { position: sticky; top: 76px; min-width: 0; }
+
+.panel { background: var(--bg-surface); border: 1px solid var(--border); border-top: 3px solid var(--accent-secondary); border-radius: var(--radius); padding: 18px 20px; }
+.panel.is-primary { border-top-color: var(--accent-primary); }
+.sec-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 12px; }
+.sec-title { margin: 0; padding-left: 10px; border-left: 3px solid var(--accent-primary); font-size: 15px; font-weight: 800; line-height: 1.25; }
+.panel:not(.is-primary) .sec-title { border-left-color: var(--accent-secondary); }
+h3.sec-title { font-size: 13.5px; }
+.sec-note { padding: 3px 7px; background: var(--bg-subtle); color: var(--text-main); border-radius: var(--radius-sm); font: 700 10.5px/1 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
+
+/* Form */
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 14px; }
+.span2 { grid-column: 1 / -1; }
+.field { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.field > span { font-size: 12px; font-weight: 700; color: var(--text-main); }
+.field > span em { font-style: normal; font-weight: 500; color: var(--text-muted); margin-left: 4px; }
+input, select, textarea {
+  width: 100%;
+  min-width: 0;
+  padding: 8px 10px;
+  color: var(--text-main);
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font: inherit;
+  font-size: 13.5px;
+}
+input:focus, select:focus, textarea:focus { outline: 0; border-color: var(--accent-primary); }
+textarea { resize: vertical; line-height: 1.55; }
+select { cursor: pointer; }
+input.is-filled, textarea.is-filled { background: var(--bg-base); }
+.inline { display: flex; gap: 8px; align-items: center; }
+.inline > input, .inline > select { flex: 1; }
+.with-thumb { display: flex; gap: 10px; align-items: center; }
+.with-thumb > input { flex: 1; }
+.thumb-mini { width: 42px; height: 56px; object-fit: cover; border: 2px solid var(--accent-secondary); border-radius: var(--radius-sm); background: var(--bg-subtle); flex-shrink: 0; }
+.thumb-wide { width: 64px; height: 36px; border-width: 1px; }
+
+/* Key Visual Picker Gallery */
+.kv-gallery { display: flex; gap: 8px; overflow-x: auto; padding: 8px; margin-top: 8px; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--radius-sm); }
+.kv-item { position: relative; width: 54px; height: 74px; padding: 0; border: 2px solid transparent; border-radius: var(--radius-sm); overflow: hidden; cursor: pointer; flex-shrink: 0; background: var(--bg-surface); }
+.kv-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.kv-item.is-selected { border-color: var(--accent-primary); outline: 2px solid var(--accent-highlight); }
+
+/* Tombol */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 9px 14px;
+  color: var(--on-accent); background: var(--accent-primary);
+  border: 1px solid var(--accent-primary); border-radius: var(--radius-sm);
+  font: 700 13px/1 var(--font-sans);
+  text-decoration: none;
+  white-space: nowrap; cursor: pointer;
+  transition: transform var(--dur) var(--ease), opacity var(--dur) var(--ease);
+}
+.btn:hover { opacity: .92; text-decoration: none; }
+.btn:active { transform: scale(.96); }
+.btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+.btn-secondary { color: var(--on-secondary); background: var(--accent-secondary); border-color: var(--accent-secondary); }
+.btn-highlight { color: var(--on-highlight); background: var(--accent-highlight); border-color: var(--accent-secondary); }
+.btn-ghost { color: var(--text-main); background: var(--bg-surface); border-color: var(--border); }
+.btn-ghost:hover { background: var(--accent-highlight); color: var(--on-highlight); border-color: var(--accent-secondary); opacity: 1; }
+.btn-sm { padding: 7px 10px; font-size: 12px; }
+.btn-block { width: 100%; padding: 13px 16px; font-size: 14px; }
+.btn-danger { color: var(--danger); }
+.btn-danger:hover { border-color: var(--danger); background: var(--bg-surface); }
+.icon-btn { width: 34px; height: 34px; padding: 0; display: inline-flex; align-items: center; justify-content: center; color: var(--text-muted); background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 17px; line-height: 1; cursor: pointer; }
+.icon-btn:hover { color: var(--danger); border-color: var(--danger); }
+
+/* Fetch */
+.fetch-row { display: flex; gap: 8px; }
+.fetch-row input, .fetch-row select { flex: 1; font-family: var(--font-mono); font-size: 12.5px; }
+.status { margin: 10px 0 0; padding: 8px 10px; font-size: 12px; color: var(--text-main); background: var(--bg-subtle); border-left: 3px solid var(--accent-secondary); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+.status[data-state="loading"] { border-left-color: var(--accent-primary); background: var(--accent-highlight); color: var(--on-highlight); }
+.status[data-state="ok"] { border-left-color: var(--accent-secondary); }
+.status[data-state="error"] { border-left-color: var(--danger); color: var(--danger); }
+
+.post-link-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; padding: 7px 10px; background: var(--accent-highlight); color: var(--on-highlight); border: 1px solid var(--accent-secondary); border-radius: var(--radius-sm); font-size: 12px; font-weight: 600; flex-wrap: wrap; }
+
+/* Chips cepat */
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.chip { padding: 5px 9px; color: var(--text-main); background: var(--bg-base); border: 1px solid var(--border); border-radius: var(--radius-sm); font: 700 11.5px/1 var(--font-mono); cursor: pointer; }
+.chip:hover { background: var(--accent-highlight); color: var(--on-highlight); border-color: var(--accent-secondary); }
+
+/* Baris download */
+.dl-head, .dl-row { display: grid; grid-template-columns: 92px 96px 150px minmax(0, 1fr) 34px; gap: 8px; align-items: center; }
+.dl-head { padding: 0 0 6px; color: var(--text-muted); font: 700 10.5px/1 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; }
+.dl-rows { display: flex; flex-direction: column; gap: 8px; }
+.dl-row { padding: 6px; margin: 0 -6px; border-radius: var(--radius-sm); }
+.dl-row:hover { background: var(--bg-base); }
+.dl-row.is-invalid .dl-url { border-color: var(--danger); }
+.dl-ep { font-family: var(--font-mono); text-align: center; }
+.dl-empty { padding: 16px; text-align: center; color: var(--text-muted); font-size: 13px; border: 1px dashed var(--border); border-radius: var(--radius-sm); background: var(--bg-base); }
+.dl-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--border); }
+.dl-actions .push { margin-left: auto; }
+
+/* Output */
+.out-panel { display: flex; flex-direction: column; gap: 16px; }
+.checks { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.checks li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 8px; align-items: start; font-size: 12.5px; color: var(--text-main); }
+.checks li b { display: inline-flex; align-items: center; justify-content: center; height: 18px; border-radius: var(--radius-sm); font: 700 10.5px/1 var(--font-mono); }
+.checks li.warn b { background: var(--accent-highlight); color: var(--on-highlight); border: 1px solid var(--accent-secondary); }
+.checks li.info b { background: var(--bg-subtle); color: var(--text-main); }
+.checks li.ok b { background: var(--accent-secondary); color: var(--on-secondary); }
+.copy-box { margin: 0; padding: 9px 12px; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--radius-sm); font: 600 12.5px/1.5 var(--font-mono); word-break: break-word; }
+.howto { margin: 0; padding-left: 18px; color: var(--text-muted); font-size: 12.5px; }
+.howto li { margin: 4px 0; }
+.howto code { font-family: var(--font-mono); font-size: 11.5px; padding: 1px 5px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-subtle); color: var(--text-main); }
+
+.toast { position: fixed; left: 50%; bottom: 20px; z-index: 50; transform: translate(-50%, 12px); padding: 10px 14px; color: #ffffff; background: #1e222d; border-radius: var(--radius-sm); font: 600 13px/1.3 var(--font-sans); opacity: 0; pointer-events: none; transition: opacity 180ms var(--ease), transform 180ms var(--ease); }
+.toast.is-show { opacity: 1; transform: translate(-50%, 0); }
+.toast[data-type="error"] { background: var(--danger); }
+
+@media (max-width: 1100px) {
+  .layout { grid-template-columns: minmax(0, 1fr); }
+  .out-col { position: static; }
+}
+@media (max-width: 640px) {
+  .wrap { padding: 0 14px; }
+  .brand-sub { display: none; }
+  .grid2 { grid-template-columns: minmax(0, 1fr); }
+  .fetch-row { flex-direction: column; }
+  .dl-head { display: none; }
+  .dl-row { grid-template-columns: 80px minmax(0, 1fr) minmax(0, 1fr) 34px; border: 1px solid var(--border); margin: 0; padding: 8px; }
+  .dl-row .dl-url { grid-column: 1 / -1; grid-row: 2; }
+}
+</style>
+</head>
+<body>
+
+<noscript>
+  <div class="js-alert">PERINGATAN: JavaScript dinonaktifkan di browser atau ekstensi untuk halaman ini. Aktifkan JavaScript agar tombol Ambil Data MAL &amp; Sinkronisasi Blogger berfungsi.</div>
+</noscript>
+<div class="js-alert" id="js-error-box" hidden></div>
+
+<header class="top">
+  <div class="wrap top-inner">
+    <div class="brand">Lorrainime <span class="brand-tag">FANSUB</span> <span class="brand-sub mono">/ blogger-sync-generator</span></div>
+    <div class="top-actions">
+      <div class="theme-switch" role="group" aria-label="Pilih tema warna">
+        <button aria-pressed="true" class="swatch" data-theme-set="anis-euphy" style="--a:#835ac1;--b:#f4e6b1" title="Anis x Euphy" type="button"></button>
+        <button aria-pressed="false" class="swatch" data-theme-set="mimi-sheena" style="--a:#da8990;--b:#3d534d" title="Mimi x Sheena" type="button"></button>
+        <button aria-pressed="false" class="swatch" data-theme-set="hima-yori" style="--a:#f0777e;--b:#6b769e" title="Hima x Yori" type="button"></button>
+        <button aria-pressed="false" class="swatch" data-theme-set="kininatteru" style="--a:#0d0d0f;--b:#a3ff00" title="Kininatteru" type="button"></button>
+      </div>
+      <button type="button" class="btn btn-ghost btn-sm btn-danger" id="btn-reset" title="Kosongkan form anime (kredit tersimpan tetap aman)">Proyek Baru</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap layout">
+  <!-- ====================== FORM ====================== -->
+  <section class="form-col" aria-label="Formulir postingan">
+
+    <!-- 1A: LOAD DARI POSTINGAN BLOGGER YANG SUDAH ADA -->
+    <div class="panel">
+      <div class="sec-head">
+        <h2 class="sec-title">1A · Update Postingan Blogger (Pilih Judul Terbit)</h2>
+        <button type="button" class="btn btn-secondary btn-sm" id="btn-sync-blogger">Muat Ulang Daftar</button>
+      </div>
+      <div class="fetch-row">
+        <select id="blogger-select" aria-label="Pilih postingan Blogger">
+          <option value="">Memuat daftar postingan dari lorrainime.blogspot.com…</option>
+        </select>
+        <button type="button" class="btn btn-secondary" id="btn-load-post" disabled>Muat Post</button>
+      </div>
+      <p class="status mono" id="blogger-status" data-state="loading">Menghubungkan ke feed lorrainime.blogspot.com…</p>
+      <div class="post-link-bar" id="post-link-bar" hidden>
+        <span id="post-link-info">Postingan aktif dimuat</span>
+        <div class="inline">
+          <a href="#" id="post-view-link" target="_blank" rel="noopener" class="btn btn-ghost btn-sm">Lihat Post ↗</a>
+          <a href="https://www.blogger.com/blog/posts/2569932688833927170" target="_blank" rel="noopener" class="btn btn-sm">Buka Dashboard Blogger ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1B: ATAU BUAT JUDUL BARU DARI MYANIMELIST -->
+    <div class="panel is-primary">
+      <div class="sec-head">
+        <h2 class="sec-title">1B · Judul Baru dari MyAnimeList</h2>
+        <span class="sec-note">AniList + Jikan</span>
+      </div>
+      <div class="fetch-row">
+        <input id="mal-input" type="text" placeholder="https://myanimelist.net/anime/61126/Kimi_ga_Shinu_made_Koi_wo_Shitai  atau  61126" autocomplete="off" spellcheck="false">
+        <button type="button" class="btn" id="btn-fetch">Ambil Data MAL</button>
+      </div>
+      <p class="status mono" id="fetch-status" data-state="idle">Untuk proyek baru: tempel URL/ID MAL lalu klik "Ambil Data MAL". Untuk update episode lama, gunakan menu 1A di atas.</p>
+    </div>
+
+    <!-- 2: DETAIL ANIME -->
+    <div class="panel">
+      <div class="sec-head">
+        <h2 class="sec-title">2 · Detail Anime &amp; Key Visual</h2>
+        <span class="sec-note" id="mal-id-note">MAL #—</span>
+      </div>
+      <div class="grid2">
+        <label class="field span2"><span>Judul Anime</span><input id="f-title" type="text" placeholder="Kimi ga Shinu made Koi wo Shitai"></label>
+        <label class="field span2"><span>Judul Alternatif <em>opsional — Inggris / Jepang</em></span><input id="f-alt" type="text" placeholder="I Want to Love You Till Your Dying Day / きみが死ぬまで恋をしたい"></label>
+        <div class="field span2">
+          <span>URL Key Visual Utama (Poster) <em>otomatis menjadi gambar utama kartu katalog (3:4)</em></span>
+          <div class="with-thumb">
+            <input id="f-poster" type="url" placeholder="https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/....jpg">
+            <img class="thumb-mini" id="poster-thumb" alt="Key Visual" hidden>
+          </div>
+          <div class="kv-gallery" id="kv-gallery" hidden></div>
+        </div>
+        <div class="field span2">
+          <span>URL Gambar Tambahan 16:9 <em>opsional — tampil di bawah info (tidak menimpa Key Visual kartu)</em></span>
+          <div class="inline">
+            <input id="f-banner" type="url" placeholder="https://s4.anilist.co/file/anilistcdn/media/anime/banner/....jpg">
+            <img class="thumb-mini thumb-wide" id="banner-thumb" alt="" hidden>
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-trailer" disabled title="Gunakan banner / thumbnail dari API">Pakai Banner</button>
+          </div>
+        </div>
+        <label class="field"><span>Tipe Rilis</span>
+          <select id="f-type">
+            <option value="BD">BD</option>
+            <option value="WEB-DL">WEB-DL</option>
+            <option value="Movie">Movie</option>
+          </select>
+        </label>
+        <label class="field"><span>Format <em>TV / Movie / OVA</em></span><input id="f-format" type="text" placeholder="TV"></label>
+        <label class="field"><span>Total Episode</span><input id="f-episodes" type="text" inputmode="numeric" placeholder="12"></label>
+        <label class="field"><span>Musim Rilis</span><input id="f-season" type="text" placeholder="Summer 2026"></label>
+        <label class="field"><span>Studio</span><input id="f-studio" type="text" placeholder="ROLL2"></label>
+        <label class="field"><span>Rating</span><input id="f-score" type="text" inputmode="decimal" placeholder="8.10"></label>
+        <label class="field span2"><span>Genre <em>pisahkan dengan koma</em></span><input id="f-genres" type="text" placeholder="Drama, Fantasy, Girls Love"></label>
+        <label class="field span2"><span>Sinopsis <em>pisahkan paragraf dengan baris kosong</em></span><textarea id="f-synopsis" rows="6" placeholder="Sinopsis anime…"></textarea></label>
+        <label class="field span2"><span>URL MyAnimeList</span><input id="f-malurl" type="url" placeholder="https://myanimelist.net/anime/61126"></label>
+      </div>
+    </div>
+
+    <!-- 3: STATUS & KREDIT -->
+    <div class="panel">
+      <div class="sec-head">
+        <h2 class="sec-title">3 · Status Update &amp; Kredit</h2>
+        <button type="button" class="btn btn-highlight btn-sm" id="btn-save-credits" title="Simpan nama staf & spesifikasi agar tidak hilang saat klik Proyek Baru">Simpan Kredit Default</button>
+      </div>
+      <div class="grid2">
+        <div class="field span2">
+          <span>Status Update Terbaru <em>dibaca otomatis oleh "Log Update Terbaru" di beranda</em></span>
+          <input id="f-status" type="text" class="mono" placeholder="EP 01  /  BATCH BD">
+          <div class="chips" id="status-chips">
+            <button type="button" class="chip" data-status="-1">EP −1</button>
+            <button type="button" class="chip" data-status="+1">EP +1</button>
+            <button type="button" class="chip" data-status="EP 01">EP 01</button>
+            <button type="button" class="chip" data-status="BATCH BD">BATCH BD</button>
+            <button type="button" class="chip" data-status="END">END</button>
+            <button type="button" class="chip" data-status="REVISI">REVISI</button>
+          </div>
+        </div>
+        <label class="field span2"><span>Spesifikasi Teknis <em>opsional</em></span><input id="f-spec" type="text" class="mono" placeholder="MKV · HEVC 10-bit · Softsub ASS"></label>
+        <label class="field"><span>Penerjemah</span><input id="c-tl" type="text" placeholder="Lorraine"></label>
+        <label class="field"><span>Timing</span><input id="c-tm" type="text" placeholder="Nama"></label>
+        <label class="field"><span>Typesetting</span><input id="c-ts" type="text" placeholder="Lorraine"></label>
+        <label class="field"><span>KFX <em>Karaoke Effect</em></span><input id="c-kfx" type="text" placeholder="Nama"></label>
+        <label class="field"><span>Encoder</span><input id="c-enc" type="text" placeholder="Nama"></label>
+        <label class="field"><span>Quality Check</span><input id="c-qc" type="text" placeholder="Lorraine"></label>
+        <label class="field span2"><span>Sumber Video <em>opsional</em></span><input id="c-src" type="text" placeholder="BDMV JP / AMZN / Raws"></label>
+        <label class="field span2"><span>Catatan Rilis <em>opsional</em></span><textarea id="f-note" rows="3" placeholder="Contoh: Gunakan MPV / VLC terbaru agar typesetting tampil sempurna."></textarea></label>
+      </div>
+    </div>
+
+    <!-- 4: LINK DOWNLOAD PER EPISODE -->
+    <div class="panel is-primary">
+      <div class="sec-head">
+        <h2 class="sec-title">4 · Link Download per Episode</h2>
+        <span class="sec-note" id="dl-count">0 link</span>
+      </div>
+      <div class="dl-head" aria-hidden="true"><span>Episode</span><span>Resolusi</span><span>Host</span><span>URL</span><span></span></div>
+      <div class="dl-rows" id="dl-rows"></div>
+      <p class="dl-empty" id="dl-empty">Belum ada link. Tambahkan baris di bawah — host terdeteksi otomatis dari URL.</p>
+      <div class="dl-actions">
+        <button type="button" class="btn btn-sm" id="btn-add-row">+ Tambah Link</button>
+        <button type="button" class="btn btn-secondary btn-sm" id="btn-next-ep">+ Episode Berikutnya</button>
+        <button type="button" class="btn btn-highlight btn-sm" id="btn-fill-eps">Isi EP 01–N</button>
+        <button type="button" class="btn btn-ghost btn-sm btn-danger push" id="btn-clear-rows">Hapus Semua</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== OUTPUT ====================== -->
+  <aside class="out-col" aria-label="Hasil">
+    <div class="panel is-primary out-panel">
+      <div>
+        <div class="sec-head">
+          <h2 class="sec-title">Output HTML Blogger</h2>
+          <span class="sec-note" id="out-size">0 karakter</span>
+        </div>
+        <button type="button" class="btn btn-block" id="btn-copy">Salin Kode HTML Blogger</button>
+      </div>
+
+      <div>
+        <div class="sec-head">
+          <h3 class="sec-title">Judul Postingan Blogger</h3>
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-copy-title">Salin Judul</button>
+        </div>
+        <p class="copy-box" id="title-out">—</p>
+      </div>
+
+      <div>
+        <div class="sec-head">
+          <h3 class="sec-title">Label Blogger Disarankan</h3>
+          <button type="button" class="btn btn-highlight btn-sm" id="btn-copy-labels">Salin Label</button>
+        </div>
+        <p class="copy-box" id="labels-out">—</p>
+      </div>
+
+      <div>
+        <div class="sec-head"><h3 class="sec-title">Pemeriksaan</h3></div>
+        <ul class="checks" id="checks"></ul>
+      </div>
+
+      <div>
+        <div class="sec-head"><h3 class="sec-title">Alur Update Episode Baru</h3></div>
+        <ol class="howto">
+          <li>Pilih judul anime dari dropdown <strong>1A · Update Postingan Blogger</strong> -> klik <code>Muat Post</code> (sinopsis, kredit, &amp; link episode lama otomatis terisi).</li>
+          <li>Klik tombol <code>+ Episode Berikutnya</code> di bagian 4, tempel link baru, dan pastikan <code>Status Update</code> sudah naik.</li>
+          <li>Klik <code>Salin Kode HTML Blogger</code> -> buka postingan di Blogger (mode <code>Tampilan HTML</code>) -> blok semua (<code>Ctrl+A</code>), tempel, lalu klik <strong>Perbarui</strong>.</li>
+        </ol>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+window.onerror = function (msg, src, line) {
+  var box = document.getElementById('js-error-box');
+  if (box) {
+    box.hidden = false;
+    box.textContent = 'JS Runtime Error (baris ' + line + '): ' + msg;
+  }
+};
+</script>
+
+<script>
+(function () {
+  'use strict';
+
+  var BLOG_FEED = 'https://lorrainime.blogspot.com/feeds/posts/default?alt=json-in-script&orderby=updated&max-results=150';
+  var STORE = 'lr-mal-generator-v6';
+  var CREDITS_STORE = 'lr-mal-credits-default-v1';
+  var ANIME_FIELDS = ['mal-input', 'f-title', 'f-alt', 'f-poster', 'f-banner', 'f-type', 'f-format', 'f-episodes', 'f-season',
+    'f-studio', 'f-score', 'f-genres', 'f-synopsis', 'f-malurl', 'f-status'];
+  var CREDIT_FIELDS = ['f-spec', 'c-tl', 'c-tm', 'c-ts', 'c-kfx', 'c-enc', 'c-qc', 'c-src', 'f-note'];
+  var ALL_FIELDS = ANIME_FIELDS.concat(CREDIT_FIELDS);
+
+  var RES = ['1080p', '720p', '480p'];
+  var HOSTS = [['auto', 'Otomatis'], ['Google Drive'], ['Acefile'], ['PixelDrain'], ['Mega'], ['MediaFire'], ['Lainnya']];
+  var RES_ORDER = { '2160p': 0, '1080p': 1, '720p': 2, '480p': 3 };
+
+  function $(s, c) { return (c || document).querySelector(s); }
+  function $$(s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); }
+  function val(id) { var el = $('#' + id); return el ? (el.value || '').trim() : ''; }
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function attr(s) { return esc(s).replace(/"/g, '&quot;'); }
+  function isUrl(u) { return /^https?:\/\/[^\s]+$/i.test(u); }
+  function pad(n) { return String(parseInt(n, 10)).padStart(2, '0'); }
+  function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
+  function debounce(fn, ms) {
+    var t;
+    return function () {
+      var args = arguments, ctx = this;
+      clearTimeout(t);
+      t = setTimeout(function () { fn.apply(ctx, args); }, ms);
+    };
+  }
+
+  var bloggerPosts = [];
+  var trailerThumb = '';
+  var keyVisuals = [];
+  var toastTimer;
+  var lastHtml = '';
+  var lastTitle = '';
+  var lastLabels = [];
+
+  function toast(msg, type) {
+    var t = $('#toast');
+    if (!t) return;
+    t.textContent = msg;
+    t.dataset.type = type || 'info';
+    t.classList.add('is-show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.classList.remove('is-show'); }, 2400);
+  }
+  function setStatus(state, msg) {
+    var s = $('#fetch-status');
+    if (!s) return;
+    s.dataset.state = state;
+    s.textContent = msg;
+  }
+  function setBloggerStatus(state, msg) {
+    var s = $('#blogger-status');
+    if (!s) return;
+    s.dataset.state = state;
+    s.textContent = msg;
+  }
+
+  /* Theme Switcher */
+  $$('[data-theme-set]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var t = btn.dataset.themeSet;
+      document.documentElement.setAttribute('data-theme', t);
+      $$('[data-theme-set]').forEach(function (b) { b.setAttribute('aria-pressed', String(b === btn)); });
+    });
+  });
+
+  /* =================================================================
+     1A. SINKRONISASI & PARSER POSTINGAN BLOGGER (JSONP FEED)
+     ================================================================= */
+  function fetchBloggerPosts() {
+    var btnSync = $('#btn-sync-blogger');
+    var btnLoad = $('#btn-load-post');
+    var sel = $('#blogger-select');
+    btnSync.disabled = true;
+    btnLoad.disabled = true;
+    setBloggerStatus('loading', 'Mengambil daftar postingan terbit dari lorrainime.blogspot.com…');
+
+    var cbName = '__lrBlogSync_' + Date.now();
+    var script = document.createElement('script');
+    var timer = setTimeout(function () {
+      cleanup();
+      setBloggerStatus('error', 'Timeout saat memuat feed Blogger. Pastikan koneksi internet aktif lalu klik Muat Ulang Daftar.');
+    }, 12000);
+
+    function cleanup() {
+      clearTimeout(timer);
+      btnSync.disabled = false;
+      try { delete window[cbName]; } catch (e) { window[cbName] = undefined; }
+      if (script.parentNode) script.parentNode.removeChild(script);
+    }
+
+    window[cbName] = function (json) {
+      cleanup();
+      var entries = (json && json.feed && json.feed.entry) || [];
+      bloggerPosts = entries.map(function (e, idx) {
+        var alt = (e.link || []).filter(function (l) { return l.rel === 'alternate'; })[0];
+        var html = (e.content && e.content.$t) || (e.summary && e.summary.$t) || '';
+        var mEp = html.match(/data-ep\s*=\s*["']([^"']+)["']/i);
+        return {
+          idx: idx,
+          title: (e.title && e.title.$t) ? e.title.$t.trim() : '(Tanpa Judul)',
+          url: alt ? alt.href : '#',
+          html: html,
+          ep: mEp ? mEp[1] : '',
+          labels: (e.category || []).map(function (c) { return c.term; })
+        };
+      });
+
+      sel.innerHTML = '';
+      if (!bloggerPosts.length) {
+        sel.innerHTML = '<option value="">Belum ada postingan terbit di blog.</option>';
+        setBloggerStatus('idle', 'Tidak ditemukan postingan terbit di lorrainime.blogspot.com.');
+        return;
+      }
+
+      var placeholder = document.createElement('option');
+      placeholder.value = '';
+      placeholder.textContent = '— Pilih judul dari ' + bloggerPosts.length + ' postingan terbit —';
+      sel.appendChild(placeholder);
+
+      bloggerPosts.forEach(function (p, i) {
+        var opt = document.createElement('option');
+        opt.value = String(i);
+        opt.textContent = (p.ep ? ('[' + p.ep + '] ') : '') + p.title;
+        sel.appendChild(opt);
+      });
+
+      btnLoad.disabled = false;
+      setBloggerStatus('ok', 'Terhubung! ' + bloggerPosts.length + ' postingan terbit siap dimuat untuk update episode.');
+    };
+
+    script.onerror = function () {
+      cleanup();
+      setBloggerStatus('error', 'Gagal memuat feed Blogger (mungkin diblokir ekstensi atau offline).');
+    };
+
+    script.src = BLOG_FEED + '&callback=' + cbName;
+    document.body.appendChild(script);
+  }
+
+  function extractParagraphsFromEl(container) {
+    if (!container) return '';
+    var ps = Array.prototype.slice.call(container.querySelectorAll('p'));
+    if (!ps.length) return container.textContent.trim();
+    return ps.map(function (p) {
+      var clone = p.cloneNode(true);
+      Array.prototype.slice.call(clone.querySelectorAll('br')).forEach(function (br) {
+        br.replaceWith('\n');
+      });
+      return clone.textContent.trim();
+    }).filter(Boolean).join('\n\n');
+  }
+
+  function loadSelectedBloggerPost() {
+    var idxStr = $('#blogger-select').value;
+    if (idxStr === '') {
+      toast('Pilih judul postingan dari dropdown terlebih dahulu', 'error');
+      return;
+    }
+    var post = bloggerPosts[parseInt(idxStr, 10)];
+    if (!post) return;
+
+    var doc = new DOMParser().parseFromString(post.html, 'text/html');
+    var lrPost = doc.querySelector('.lr-post');
+
+    ANIME_FIELDS.forEach(function (id) { setField(id, ''); });
+    rowsEl.innerHTML = '';
+    keyVisuals = [];
+    renderKvGallery([], '');
+    trailerThumb = '';
+    $('#btn-trailer').disabled = true;
+
+    if (lrPost) {
+      var malId = lrPost.getAttribute('data-mal-id') || '';
+      var malLinkEl = doc.querySelector('.lr-mal');
+      var malUrl = malLinkEl ? (malLinkEl.getAttribute('href') || '') : '';
+      if (!malId && malUrl) malId = parseMalId(malUrl);
+
+      setField('mal-input', malUrl || malId);
+      setField('f-malurl', malUrl || (malId ? ('https://myanimelist.net/anime/' + malId) : ''));
+      $('#mal-id-note').textContent = malId ? ('MAL #' + malId) : 'MAL #—';
+
+      var titleEl = doc.querySelector('.lr-title');
+      var altEl = doc.querySelector('.lr-alt');
+      var posterImg = doc.querySelector('.lr-poster img');
+      var bannerImg = doc.querySelector('.lr-banner img');
+
+      setField('f-title', titleEl ? titleEl.textContent.trim() : cleanPostTitleToAnimeName(post.title));
+      setField('f-alt', altEl ? altEl.textContent.trim() : '');
+      setField('f-poster', posterImg ? (posterImg.getAttribute('src') || '') : '');
+      setField('f-banner', bannerImg ? (bannerImg.getAttribute('src') || '') : '');
+
+      Array.prototype.slice.call(doc.querySelectorAll('.lr-table tr')).forEach(function (tr) {
+        var th = tr.querySelector('th');
+        var td = tr.querySelector('td');
+        if (!th || !td) return;
+        var key = th.textContent.trim().toLowerCase();
+        var rawVal = td.textContent.trim();
+
+        if (key === 'tipe rilis') {
+          if (/movie/i.test(rawVal)) $('#f-type').value = 'Movie';
+          else if (/web/i.test(rawVal)) $('#f-type').value = 'WEB-DL';
+          else $('#f-type').value = 'BD';
+        } else if (key === 'format') {
+          setField('f-format', rawVal);
+        } else if (key === 'episode') {
+          setField('f-episodes', rawVal);
+        } else if (key === 'musim') {
+          setField('f-season', rawVal);
+        } else if (key === 'studio') {
+          setField('f-studio', rawVal);
+        } else if (key.indexOf('rating') === 0) {
+          setField('f-score', rawVal.replace(/\/\s*10/g, '').trim());
+        } else if (key === 'genre') {
+          var gSpans = Array.prototype.slice.call(td.querySelectorAll('.lr-genre'));
+          var gText = gSpans.length ? gSpans.map(function (s) { return s.textContent.trim(); }).join(', ') : rawVal;
+          setField('f-genres', gText);
+        } else if (key === 'status') {
+          setField('f-status', rawVal);
+        } else if (key === 'spesifikasi') {
+          setField('f-spec', rawVal);
+        }
+      });
+
+      if (!val('f-status')) {
+        var markerEl = doc.querySelector('.update-marker');
+        if (markerEl) setField('f-status', markerEl.getAttribute('data-ep') || markerEl.textContent.trim());
+      }
+
+      setField('f-synopsis', extractParagraphsFromEl(doc.querySelector('.lr-synopsis')));
+
+      var creditMap = {
+        'penerjemah': 'c-tl',
+        'timing': 'c-tm',
+        'typesetting': 'c-ts',
+        'kfx': 'c-kfx',
+        'encoder': 'c-enc',
+        'quality check': 'c-qc',
+        'sumber video': 'c-src'
+      };
+      CREDIT_FIELDS.forEach(function (cid) { if (cid !== 'f-spec' && cid !== 'f-note') setField(cid, ''); });
+      Array.prototype.slice.call(doc.querySelectorAll('.lr-credit li')).forEach(function (li) {
+        var span = li.querySelector('span');
+        if (!span) return;
+        var role = span.textContent.trim().toLowerCase();
+        var person = li.textContent.replace(span.textContent, '').trim();
+        if (creditMap[role]) setField(creditMap[role], person);
+      });
+
+      setField('f-note', extractParagraphsFromEl(doc.querySelector('.lr-note')));
+
+      Array.prototype.slice.call(doc.querySelectorAll('.lr-dl-row')).forEach(function (dlRow) {
+        var epEl = dlRow.querySelector('.lr-dl-ep');
+        var epRaw = epEl ? epEl.textContent.trim() : '';
+        var epClean = /^EP\s+\d+$/i.test(epRaw) ? epRaw.replace(/^EP\s+/i, '') : epRaw;
+
+        Array.prototype.slice.call(dlRow.querySelectorAll('.lr-dl-res')).forEach(function (resDiv) {
+          var resEl = resDiv.querySelector('.lr-res');
+          var resVal = resEl ? resEl.textContent.trim() : '1080p';
+          Array.prototype.slice.call(resDiv.querySelectorAll('a')).forEach(function (a) {
+            var url = a.getAttribute('href') || '';
+            var label = a.textContent.trim();
+            var det = detectHost(url);
+            var hostVal = (det && det.toLowerCase() === label.toLowerCase()) ? 'auto'
+              : (HOSTS.some(function (h) { return h[0] === label; }) ? label : 'auto');
+            addRow({ ep: epClean, res: resVal, host: hostVal, url: url });
+          });
+        });
+      });
+
+      setBloggerStatus('ok', 'Data lengkap "' + val('f-title') + '" berhasil dimuat! Klik "+ Episode Berikutnya" di bagian 4 untuk menambah episode baru.');
+      toast('Postingan Blogger dimuat lengkap');
+    } else {
+      var cleanName = cleanPostTitleToAnimeName(post.title);
+      setField('f-title', cleanName);
+      setField('mal-input', cleanName);
+      if (/movie/i.test(post.title)) $('#f-type').value = 'Movie';
+      else if (/web-dl|webdl/i.test(post.title)) $('#f-type').value = 'WEB-DL';
+      else $('#f-type').value = 'BD';
+
+      var firstImg = doc.querySelector('img');
+      if (firstImg && isUrl(firstImg.getAttribute('src'))) {
+        setField('f-banner', firstImg.getAttribute('src'));
+      }
+
+      Array.prototype.slice.call(doc.querySelectorAll('a')).forEach(function (a) {
+        var href = a.getAttribute('href') || '';
+        if (isUrl(href) && !/blogspot\.com|blogger\.com|googleusercontent\.com/i.test(href)) {
+          addRow({ ep: 'Batch', res: '1080p', host: 'auto', url: href });
+        }
+      });
+
+      loadDefaultCredits();
+      setBloggerStatus('ok', 'Postingan format lama dimuat. Klik "Ambil Data MAL" atau isi ID MAL untuk mengambil Key Visual & sinopsis.');
+      toast('Postingan lama dimuat — siap dikonversi');
+    }
+
+    var linkBar = $('#post-link-bar');
+    var viewLink = $('#post-view-link');
+    var linkInfo = $('#post-link-info');
+    if (linkBar && viewLink && linkInfo) {
+      linkBar.hidden = false;
+      linkInfo.textContent = 'Mengedit: ' + post.title;
+      viewLink.href = post.url;
+    }
+
+    updateThumbs();
+    regenerate();
+  }
+
+  function cleanPostTitleToAnimeName(t) {
+    return String(t || '')
+      .replace(/\b(Movie\s*BD|Series\s*BD|Anime\s*BD|WEB-DL|BD)\b/gi, '')
+      .replace(/\bSubtitle\s*Indonesia\b/gi, '')
+      .replace(/\[[^\]]*\]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  /* =================================================================
+     1B. ANILIST GRAPHQL + JIKAN ENRICHMENT
+     ================================================================= */
+  function parseMalId(input) {
+    var s = String(input || '').trim();
+    if (/^\d+$/.test(s)) return s;
+    var m = s.match(/anime(?:\.php\?id=|\/)(\d+)/i);
+    return m ? m[1] : '';
+  }
+  function cleanSynopsis(s) {
+    return String(s || '')
+      .replace(/<br\s*\/?>/gi, '\n')
+      .replace(/<[^>]+>/g, '')
+      .replace(/\r/g, '')
+      .replace(/\[Written by MAL Rewrite\]/gi, '')
+      .replace(/\(Source:[^)]*\)/gi, '')
+      .replace(/[ \t]+\n/g, '\n')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
+  }
+  function setField(id, v) {
+    var f = $('#' + id);
+    if (!f) return;
+    f.value = v == null ? '' : v;
+    f.classList.toggle('is-filled', !!f.value);
+  }
+
+  function fetchAniListByMalId(id) {
+    var query = [
+      'query ($idMal: Int) {',
+      '  Media(idMal: $idMal, type: ANIME) {',
+      '    idMal',
+      '    title { romaji english native }',
+      '    coverImage { extraLarge large }',
+      '    bannerImage',
+      '    format',
+      '    episodes',
+      '    season',
+      '    seasonYear',
+      '    studios(isMain: true) { nodes { name } }',
+      '    averageScore',
+      '    genres',
+      '    description(asHtml: false)',
+      '  }',
+      '}'
+    ].join('\n');
+
+    return fetch('https://graphql.anilist.co', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ query: query, variables: { idMal: parseInt(id, 10) } })
+    }).then(function (res) {
+      if (!res.ok) throw new Error('AniList HTTP ' + res.status);
+      return res.json();
+    }).then(function (json) {
+      var m = json && json.data && json.data.Media;
+      if (!m) throw new Error('Anime MAL #' + id + ' tidak ditemukan di AniList.');
+      var title = (m.title && (m.title.romaji || m.title.english)) || '';
+      var altList = [];
+      if (m.title && m.title.english && m.title.english !== title) altList.push(m.title.english);
+      if (m.title && m.title.native && m.title.native !== title) altList.push(m.title.native);
+      var poster = (m.coverImage && (m.coverImage.extraLarge || m.coverImage.large)) || '';
+      var studios = (m.studios && m.studios.nodes) ? m.studios.nodes.map(function (n) { return n.name; }).join(', ') : '';
+      var season = (m.season && m.seasonYear) ? (cap(m.season.toLowerCase()) + ' ' + m.seasonYear) : (m.seasonYear ? String(m.seasonYear) : '');
+      return {
+        malId: id,
+        title: title,
+        alt: altList.join(' / '),
+        poster: poster,
+        pics: poster ? [poster] : [],
+        format: m.format || 'TV',
+        episodes: m.episodes != null ? String(m.episodes) : '',
+        season: season,
+        studio: studios,
+        score: m.averageScore ? (m.averageScore / 10).toFixed(2) : '',
+        genres: m.genres || [],
+        synopsis: cleanSynopsis(m.description),
+        malUrl: 'https://myanimelist.net/anime/' + id,
+        banner: m.bannerImage || ''
+      };
+    });
+  }
+
+  function fetchJikanEnrichment(id) {
+    return fetch('https://api.jikan.moe/v4/anime/' + id, { headers: { 'Accept': 'application/json' } })
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (json) {
+        var d = json && json.data;
+        if (!d) return null;
+        var malPoster = (d.images && d.images.jpg && (d.images.jpg.large_image_url || d.images.jpg.image_url)) || '';
+        return {
+          title: d.title || '',
+          alt: [d.title_english, d.title_japanese].filter(function (x) { return x && x !== d.title; }).join(' / '),
+          poster: malPoster,
+          format: d.type || '',
+          episodes: d.episodes != null ? String(d.episodes) : '',
+          season: (d.season && d.year) ? (cap(d.season) + ' ' + d.year) : '',
+          studio: (d.studios || []).map(function (s) { return s.name; }).join(', '),
+          score: typeof d.score === 'number' ? d.score.toFixed(2) : '',
+          genres: [].concat(d.genres || [], d.themes || [], d.demographics || []).map(function (g) { return g.name; }),
+          synopsis: cleanSynopsis(d.synopsis),
+          malUrl: d.url || ('https://myanimelist.net/anime/' + id),
+          trailer: (d.trailer && d.trailer.images && (d.trailer.images.maximum_image_url || d.trailer.images.large_image_url)) || ''
+        };
+      })
+      .catch(function () { return null; });
+  }
+
+  function fetchJikanPictures(id) {
+    return fetch('https://api.jikan.moe/v4/anime/' + id + '/pictures', { headers: { 'Accept': 'application/json' } })
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (json) {
+        if (!json || !json.data) return [];
+        return json.data.map(function (p) {
+          return (p.jpg && (p.jpg.large_image_url || p.jpg.image_url)) || (p.webp && p.webp.large_image_url) || '';
+        }).filter(Boolean);
+      })
+      .catch(function () { return []; });
+  }
+
+  function fetchMal() {
+    var id = parseMalId(val('mal-input'));
+    if (!id) {
+      setStatus('error', 'Masukkan URL atau ID angka MyAnimeList (contoh: https://myanimelist.net/anime/61126 atau 61126).');
+      return;
+    }
+    var btn = $('#btn-fetch');
+    btn.disabled = true;
+    btn.textContent = 'Mengambil…';
+    setStatus('loading', 'Mengambil Key Visual & metadata untuk MAL #' + id + '…');
+
+    Promise.all([
+      fetchAniListByMalId(id).catch(function () { return null; }),
+      fetchJikanEnrichment(id),
+      fetchJikanPictures(id)
+    ]).then(function (results) {
+      var ani = results[0];
+      var jik = results[1];
+      var pics = results[2] || [];
+
+      if (!ani && !jik) {
+        throw new Error('Tidak dapat mengambil data dari AniList maupun Jikan untuk MAL #' + id + '.');
+      }
+
+      var base = ani || jik;
+      var mergedPics = [];
+      if (jik && jik.poster && mergedPics.indexOf(jik.poster) === -1) mergedPics.push(jik.poster);
+      if (ani && ani.poster && mergedPics.indexOf(ani.poster) === -1) mergedPics.push(ani.poster);
+      pics.forEach(function (u) { if (mergedPics.indexOf(u) === -1) mergedPics.push(u); });
+
+      var uniqueGenres = [];
+      ((jik && jik.genres && jik.genres.length) ? jik.genres : (base.genres || [])).forEach(function (g) {
+        if (uniqueGenres.indexOf(g) === -1) uniqueGenres.push(g);
+      });
+
+      var finalData = {
+        malId: id,
+        title: (jik && jik.title) || base.title,
+        alt: (jik && jik.alt) || base.alt,
+        poster: mergedPics[0] || base.poster || '',
+        pics: mergedPics,
+        format: (jik && jik.format) || base.format,
+        episodes: (jik && jik.episodes) || base.episodes,
+        season: (jik && jik.season) || base.season,
+        studio: (jik && jik.studio) || base.studio,
+        score: (jik && jik.score) || base.score,
+        genres: uniqueGenres,
+        synopsis: (jik && jik.synopsis) || base.synopsis,
+        malUrl: (jik && jik.malUrl) || base.malUrl,
+        banner: (ani && ani.banner) || (jik && jik.trailer) || ''
+      };
+
+      applyFetchedData(finalData);
+      var srcLabel = (ani && jik) ? 'AniList + Jikan MAL' : (ani ? 'AniList GraphQL' : 'Jikan MAL');
+      setStatus('ok', 'Berhasil (' + srcLabel + ') — "' + finalData.title + '" (MAL #' + id + ') dimuat.');
+      toast('Key Visual & metadata berhasil dimuat');
+    }).catch(function (err) {
+      var msg = (err && err.message) || 'Gagal mengambil data anime.';
+      setStatus('error', msg);
+      toast(msg, 'error');
+    }).finally(function () {
+      btn.disabled = false;
+      btn.textContent = 'Ambil Data MAL';
+    });
+  }
+
+  function renderKvGallery(pics, currentUrl) {
+    var gal = $('#kv-gallery');
+    if (!gal) return;
+    if (!pics || pics.length <= 1) {
+      gal.hidden = true;
+      gal.innerHTML = '';
+      return;
+    }
+    gal.hidden = false;
+    gal.innerHTML = pics.map(function (u, idx) {
+      return '<button type="button" class="kv-item' + (u === currentUrl ? ' is-selected' : '') + '" data-kv="' + attr(u) + '" title="Key Visual #' + (idx + 1) + '"><img src="' + attr(u) + '" alt="KV ' + (idx + 1) + '" loading="lazy"></button>';
+    }).join('');
+  }
+
+  var kvGalEl = $('#kv-gallery');
+  if (kvGalEl) {
+    kvGalEl.addEventListener('click', function (e) {
+      var btn = e.target.closest('[data-kv]');
+      if (!btn) return;
+      var u = btn.dataset.kv;
+      setField('f-poster', u);
+      $$('.kv-item', kvGalEl).forEach(function (b) { b.classList.toggle('is-selected', b === btn); });
+      updateThumbs();
+      regenerate();
+      toast('Key Visual dipilih');
+    });
+  }
+
+  function applyFetchedData(d) {
+    var isMovie = /movie/i.test(d.format);
+    setField('f-title', d.title);
+    setField('f-alt', d.alt);
+    setField('f-poster', d.poster);
+    setField('f-format', d.format);
+    setField('f-episodes', d.episodes);
+    setField('f-season', d.season);
+    setField('f-studio', d.studio);
+    setField('f-score', d.score);
+    setField('f-genres', (d.genres || []).join(', '));
+    setField('f-synopsis', d.synopsis);
+    setField('f-malurl', d.malUrl);
+    $('#f-type').value = isMovie ? 'Movie' : 'BD';
+    $('#mal-id-note').textContent = 'MAL #' + d.malId;
+
+    keyVisuals = d.pics || [];
+    renderKvGallery(keyVisuals, d.poster);
+
+    trailerThumb = d.banner || '';
+    $('#btn-trailer').disabled = !trailerThumb;
+    updateThumbs();
+    regenerate();
+  }
+
+  /* ---------- Link download ---------- */
+  var rowsEl = $('#dl-rows');
+
+  function detectHost(url) {
+    var u = String(url || '').toLowerCase();
+    if (!u) return '';
+    if (/drive\.google\.|docs\.google\./.test(u)) return 'Google Drive';
+    if (/acefile\./.test(u)) return 'Acefile';
+    if (/pixeldrain\./.test(u)) return 'PixelDrain';
+    if (/mega\.(nz|io|co)/.test(u)) return 'Mega';
+    if (/mediafire\./.test(u)) return 'MediaFire';
+    try { return new URL(url).hostname.replace(/^www\./, ''); } catch (e) { return ''; }
+  }
+  function hostName(r) {
+    if (r.host && r.host !== 'auto' && r.host !== 'Lainnya') return r.host;
+    return detectHost(r.url) || 'Download';
+  }
+  function addRow(data, focus) {
+    data = data || {};
+    var row = document.createElement('div');
+    row.className = 'dl-row';
+    row.innerHTML =
+      '<input class="dl-ep" type="text" placeholder="01" aria-label="Nomor episode">' +
+      '<select class="dl-res" aria-label="Resolusi">' + RES.map(function (r) { return '<option value="' + r + '">' + r + '</option>'; }).join('') + '</select>' +
+      '<select class="dl-host" aria-label="Host">' + HOSTS.map(function (h) { return '<option value="' + h[0] + '">' + (h[1] || h[0]) + '</option>'; }).join('') + '</select>' +
+      '<input class="dl-url" type="url" placeholder="https://drive.google.com/…" aria-label="URL download" spellcheck="false">' +
+      '<button type="button" class="icon-btn dl-del" title="Hapus baris" aria-label="Hapus baris">×</button>';
+    $('.dl-ep', row).value = data.ep || '';
+    $('.dl-res', row).value = RES.indexOf(data.res) > -1 ? data.res : '1080p';
+    $('.dl-host', row).value = HOSTS.some(function (h) { return h[0] === data.host; }) ? data.host : 'auto';
+    $('.dl-url', row).value = data.url || '';
+    rowsEl.appendChild(row);
+    refreshRow(row);
+    if (focus) $(data.ep ? '.dl-url' : '.dl-ep', row).focus();
+    return row;
+  }
+  function refreshRow(row) {
+    var url = $('.dl-url', row).value.trim();
+    var opt = $('.dl-host option[value="auto"]', row);
+    var det = detectHost(url);
+    opt.textContent = det ? ('Otomatis · ' + det) : 'Otomatis';
+    row.classList.toggle('is-invalid', !!url && !isUrl(url));
+  }
+  function readRows() {
+    return $$('.dl-row', rowsEl).map(function (r) {
+      return {
+        ep: $('.dl-ep', r).value.trim(),
+        res: $('.dl-res', r).value,
+        host: $('.dl-host', r).value,
+        url: $('.dl-url', r).value.trim()
+      };
+    });
+  }
+  function lastRow() { var r = readRows(); return r[r.length - 1]; }
+  function epNumber(s) { var m = String(s || '').match(/(\d+)/); return m ? parseInt(m[1], 10) : NaN; }
+
+  rowsEl.addEventListener('input', function (e) { var row = e.target.closest('.dl-row'); if (row) refreshRow(row); schedule(); });
+  rowsEl.addEventListener('change', schedule);
+  rowsEl.addEventListener('click', function (e) {
+    var del = e.target.closest('.dl-del');
+    if (!del) return;
+    del.closest('.dl-row').remove();
+    schedule();
+  });
+
+  $('#btn-add-row').addEventListener('click', function () {
+    var l = lastRow();
+    addRow(l ? { ep: l.ep, res: l.res, host: l.host } : {}, true);
+    schedule();
+  });
+  $('#btn-next-ep').addEventListener('click', function () {
+    var l = lastRow();
+    var n = l ? epNumber(l.ep) : 0;
+    var nextEp = pad((isNaN(n) ? 0 : n) + 1);
+    addRow({ ep: nextEp, res: l ? l.res : '1080p', host: l ? l.host : 'auto' }, true);
+    setField('f-status', 'EP ' + nextEp);
+    schedule();
+  });
+  $('#btn-fill-eps').addEventListener('click', function () {
+    var n = parseInt(val('f-episodes'), 10);
+    if (!n || n < 1) {
+      var ask = prompt('Total episode belum diisi. Buat berapa baris episode?', '12');
+      n = parseInt(ask, 10);
+      if (!n || n < 1) return;
+    }
+    if (n > 60 && !confirm('Buat ' + n + ' baris episode?')) return;
+    var existing = {};
+    readRows().forEach(function (r) { existing[epNumber(r.ep)] = true; });
+    var l = lastRow();
+    var added = 0;
+    for (var i = 1; i <= n; i++) {
+      if (existing[i]) continue;
+      addRow({ ep: pad(i), res: l ? l.res : '1080p', host: l ? l.host : 'auto' });
+      added++;
+    }
+    toast(added ? (added + ' baris episode ditambahkan') : 'Semua episode sudah ada');
+    schedule();
+  });
+  $('#btn-clear-rows').addEventListener('click', function () {
+    if (!rowsEl.children.length || !confirm('Hapus semua baris link download?')) return;
+    rowsEl.innerHTML = '';
+    schedule();
+  });
+
+  /* ---------- Status cepat ---------- */
+  $('#status-chips').addEventListener('click', function (e) {
+    var chip = e.target.closest('[data-status]');
+    if (!chip) return;
+    var f = $('#f-status');
+    var v = chip.dataset.status;
+    if (v === '+1' || v === '-1') {
+      var n = epNumber(f.value);
+      var next = isNaN(n) ? 1 : Math.max(1, n + (v === '+1' ? 1 : -1));
+      f.value = 'EP ' + pad(next);
+    } else {
+      f.value = v;
+    }
+    schedule();
+  });
+
+  /* ---------- Generator HTML & Judul ---------- */
+  function epLabel(raw) {
+    var s = String(raw || '').trim();
+    if (!s) return 'EP ??';
+    var m = s.match(/^(?:ep(?:isode)?\.?\s*)?(\d{1,4})(?:\s*[-–~]\s*(\d{1,4}))?$/i);
+    if (m) return m[2] ? ('EP ' + pad(m[1]) + '–' + pad(m[2])) : ('EP ' + pad(m[1]));
+    return s.toUpperCase();
+  }
+  function epSortKey(label) {
+    if (/batch|complete|full/i.test(label)) return -1;
+    var n = epNumber(label);
+    return isNaN(n) ? 999999 : n;
+  }
+  function paragraphs(text, indent) {
+    return String(text).split(/\n\s*\n/).map(function (p) { return p.trim(); }).filter(Boolean)
+      .map(function (p) { return indent + '<p>' + esc(p).replace(/\n/g, '<br>') + '</p>'; });
+  }
+
+  function collect() {
+    return {
+      malId: parseMalId(val('f-malurl')) || parseMalId(val('mal-input')),
+      title: val('f-title'),
+      alt: val('f-alt'),
+      poster: val('f-poster'),
+      banner: val('f-banner'),
+      type: $('#f-type').value,
+      format: val('f-format'),
+      episodes: val('f-episodes'),
+      season: val('f-season'),
+      studio: val('f-studio'),
+      score: val('f-score'),
+      genres: val('f-genres').split(',').map(function (g) { return g.trim(); }).filter(Boolean),
+      synopsis: ($('#f-synopsis').value || '').trim(),
+      malUrl: val('f-malurl'),
+      status: val('f-status'),
+      spec: val('f-spec'),
+      note: ($('#f-note').value || '').trim(),
+      credits: [
+        ['Penerjemah', val('c-tl')],
+        ['Timing', val('c-tm')],
+        ['Typesetting', val('c-ts')],
+        ['KFX', val('c-kfx')],
+        ['Encoder', val('c-enc')],
+        ['Quality Check', val('c-qc')],
+        ['Sumber Video', val('c-src')]
+      ].filter(function (c) { return c[1]; }),
+      rows: readRows()
+    };
+  }
+
+  function buildPostTitle(d) {
+    if (!d.title) return '';
+    var suffix = d.type === 'Movie' ? 'Movie BD Subtitle Indonesia' : (d.type === 'WEB-DL' ? 'WEB-DL Subtitle Indonesia' : 'BD Subtitle Indonesia');
+    return d.title + ' ' + suffix;
+  }
+
+  function buildHtml(d) {
+    var L = [];
+    if (d.status) L.push('<span class="update-marker" data-ep="' + attr(d.status) + '">' + esc(d.status) + '</span>');
+    L.push('<div class="lr-post"' + (d.malId ? (' data-mal-id="' + attr(d.malId) + '"') : '') + '>');
+
+    L.push('  <div class="lr-info">');
+    if (isUrl(d.poster)) L.push('    <div class="lr-poster"><img src="' + attr(d.poster) + '" alt="Key Visual ' + attr(d.title) + '"></div>');
+    L.push('    <div class="lr-detail">');
+    L.push('      <h2 class="lr-title">' + esc(d.title || 'Judul Anime') + '</h2>');
+    if (d.alt) L.push('      <p class="lr-alt">' + esc(d.alt) + '</p>');
+    var rows = [
+      ['Tipe Rilis', d.type ? '<span class="lr-type">' + esc(d.type) + '</span>' : ''],
+      ['Format', esc(d.format)],
+      ['Episode', esc(d.episodes)],
+      ['Musim', esc(d.season)],
+      ['Studio', esc(d.studio)],
+      ['Rating', d.score ? (esc(d.score) + ' / 10') : ''],
+      ['Genre', d.genres.map(function (g) { return '<span class="lr-genre">' + esc(g) + '</span>'; }).join(' ')],
+      ['Status', d.status ? '<span class="lr-status">' + esc(d.status) + '</span>' : ''],
+      ['Spesifikasi', d.spec ? '<span class="lr-spec">' + esc(d.spec) + '</span>' : '']
+    ].filter(function (r) { return r[1]; });
+    if (rows.length) {
+      L.push('      <table class="lr-table">', '        <tbody>');
+      rows.forEach(function (r) { L.push('          <tr><th>' + r[0] + '</th><td>' + r[1] + '</td></tr>'); });
+      L.push('        </tbody>', '      </table>');
+    }
+    if (isUrl(d.malUrl)) L.push('      <a class="lr-mal" href="' + attr(d.malUrl) + '" target="_blank" rel="noopener">Lihat di MyAnimeList ↗</a>');
+    L.push('    </div>', '  </div>');
+
+    if (isUrl(d.banner)) L.push('  <div class="lr-banner"><img src="' + attr(d.banner) + '" alt="Preview ' + attr(d.title) + '"></div>');
+
+    if (d.synopsis) {
+      L.push('  <div class="lr-section lr-synopsis">', '    <h3>Sinopsis</h3>');
+      L.push.apply(L, paragraphs(d.synopsis, '    '));
+      L.push('  </div>');
+    }
+
+    if (d.credits.length) {
+      L.push('  <div class="lr-section lr-credit">', '    <h3>Kredit</h3>', '    <ul>');
+      d.credits.forEach(function (c) { L.push('      <li><span>' + esc(c[0]) + '</span>' + esc(c[1]) + '</li>'); });
+      L.push('    </ul>', '  </div>');
+    }
+
+    var valid = d.rows.filter(function (r) { return isUrl(r.url); });
+    if (valid.length) {
+      var groups = {};
+      var epOrder = [];
+      valid.forEach(function (r) {
+        var ep = epLabel(r.ep);
+        if (!groups[ep]) { groups[ep] = {}; epOrder.push(ep); }
+        if (!groups[ep][r.res]) groups[ep][r.res] = [];
+        groups[ep][r.res].push(r);
+      });
+      epOrder.sort(function (a, b) { return epSortKey(a) - epSortKey(b); });
+      L.push('  <div class="lr-section lr-download">', '    <h3>Link Download</h3>', '    <div class="lr-dl">');
+      epOrder.forEach(function (ep) {
+        L.push('      <div class="lr-dl-row">', '        <div class="lr-dl-ep">' + esc(ep) + '</div>', '        <div class="lr-dl-links">');
+        var resKeys = Object.keys(groups[ep]).sort(function (a, b) {
+          return (RES_ORDER[a] != null ? RES_ORDER[a] : 9) - (RES_ORDER[b] != null ? RES_ORDER[b] : 9);
+        });
+        resKeys.forEach(function (rz) {
+          var links = groups[ep][rz].map(function (r) {
+            return '<a href="' + attr(r.url) + '" target="_blank" rel="noopener nofollow">' + esc(hostName(r)) + '</a>';
+          }).join(' ');
+          L.push('          <div class="lr-dl-res"><span class="lr-res">' + esc(rz) + '</span> ' + links + '</div>');
+        });
+        L.push('        </div>', '      </div>');
+      });
+      L.push('    </div>', '  </div>');
+    }
+
+    if (d.note) {
+      L.push('  <div class="lr-note">');
+      L.push.apply(L, paragraphs(d.note, '    '));
+      L.push('  </div>');
+    }
+
+    L.push('</div>');
+    return L.join('\n');
+  }
+
+  function suggestLabels(d) {
+    var out = [];
+    var isMovie = d.type === 'Movie' || /movie/i.test(d.format);
+    if (d.type === 'BD') out.push(isMovie ? 'Movie BD' : 'Anime BD');
+    else if (d.type === 'Movie') out.push('Movie BD');
+    else if (d.type === 'WEB-DL') { out.push('Anime Webdl'); if (isMovie) out.push('Movie'); }
+    if (d.season) out.push(d.season);
+    if (d.genres.some(function (g) { return /girls\s*love|yuri|shoujo\s*ai/i.test(g); })) out.push('Girls Love');
+    d.genres.forEach(function (g) { out.push(g); });
+    var seen = {};
+    return out.filter(function (x) { var k = x.toLowerCase(); if (seen[k]) return false; seen[k] = true; return true; });
+  }
+
+  function checks(d) {
+    var c = [];
+    var bad = d.rows.filter(function (r) { return r.url && !isUrl(r.url); }).length;
+    var blank = d.rows.filter(function (r) { return !r.url; }).length;
+    var ok = d.rows.filter(function (r) { return isUrl(r.url); }).length;
+    if (!d.title) c.push(['warn', '!', 'Judul anime masih kosong.']);
+    if (!d.status) c.push(['warn', '!', 'Status Update kosong — changelog beranda akan menampilkan badge "UPDATE".']);
+    else c.push(['ok', '✓', 'Penanda changelog: <span class="mono">' + esc(d.status) + '</span>']);
+    if (!isUrl(d.poster)) c.push(['warn', '!', 'URL Key Visual belum terisi.']);
+    else c.push(['ok', '✓', 'Key Visual siap dijadikan gambar kartu katalog (3:4).']);
+    if (bad) c.push(['warn', '!', bad + ' URL download tidak valid (harus diawali http:// atau https://).']);
+    if (blank) c.push(['info', 'i', blank + ' baris download tanpa URL — tidak dimasukkan ke kode.']);
+    if (!ok) c.push(['info', 'i', 'Belum ada link download.']);
+    else c.push(['ok', '✓', ok + ' link download siap.']);
+    return c;
+  }
+
+  function regenerate() {
+    var d = collect();
+    lastHtml = buildHtml(d);
+    lastTitle = buildPostTitle(d);
+    lastLabels = suggestLabels(d);
+    $('#out-size').textContent = lastHtml.length.toLocaleString('id-ID') + ' karakter';
+    $('#title-out').textContent = lastTitle || '—';
+    $('#labels-out').textContent = lastLabels.length ? lastLabels.join(', ') : '—';
+    var ok = d.rows.filter(function (r) { return isUrl(r.url); }).length;
+    $('#dl-count').textContent = ok + ' link';
+    $('#dl-empty').hidden = rowsEl.children.length > 0;
+    $('#checks').innerHTML = checks(d).map(function (item) {
+      return '<li class="' + item[0] + '"><b>' + item[1] + '</b><span>' + item[2] + '</span></li>';
+    }).join('');
+    save();
+  }
+  var schedule = debounce(regenerate, 160);
+
+  function updateThumbs() {
+    [['f-poster', 'poster-thumb'], ['f-banner', 'banner-thumb']].forEach(function (pair) {
+      var u = val(pair[0]), img = $('#' + pair[1]);
+      if (!img) return;
+      if (isUrl(u)) { img.src = u; img.hidden = false; img.onerror = function () { img.hidden = true; }; }
+      else { img.hidden = true; img.removeAttribute('src'); }
+    });
+  }
+
+  function saveDefaultCredits() {
+    try {
+      var creds = {};
+      CREDIT_FIELDS.forEach(function (id) { var el = $('#' + id); if (el) creds[id] = el.value; });
+      localStorage.setItem(CREDITS_STORE, JSON.stringify(creds));
+      toast('Kredit default disimpan (aman saat klik Proyek Baru)');
+    } catch (e) {}
+  }
+  function loadDefaultCredits() {
+    try {
+      var creds = JSON.parse(localStorage.getItem(CREDITS_STORE) || 'null');
+      if (!creds) return;
+      CREDIT_FIELDS.forEach(function (id) {
+        var el = $('#' + id);
+        if (el && creds[id] != null) el.value = creds[id];
+      });
+    } catch (e) {}
+  }
+
+  function save() {
+    try {
+      var data = { fields: {}, rows: readRows(), trailerThumb: trailerThumb, keyVisuals: keyVisuals };
+      ALL_FIELDS.forEach(function (id) { var el = $('#' + id); if (el) data.fields[id] = el.value; });
+      localStorage.setItem(STORE, JSON.stringify(data));
+    } catch (e) {}
+  }
+  function load() {
+    try {
+      var data = JSON.parse(localStorage.getItem(STORE) || 'null');
+      if (!data) { loadDefaultCredits(); return false; }
+      ALL_FIELDS.forEach(function (id) {
+        var el = $('#' + id);
+        if (el && data.fields && data.fields[id] != null) el.value = data.fields[id];
+      });
+      (data.rows || []).forEach(function (r) { addRow(r); });
+      trailerThumb = data.trailerThumb || '';
+      keyVisuals = data.keyVisuals || [];
+      renderKvGallery(keyVisuals, val('f-poster'));
+      $('#btn-trailer').disabled = !trailerThumb;
+      var id = parseMalId(val('f-malurl'));
+      if (id) $('#mal-id-note').textContent = 'MAL #' + id;
+      return true;
+    } catch (e) { return false; }
+  }
+
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).then(function () { return true; }).catch(function () { return fallbackCopy(text); });
+    }
+    return Promise.resolve(fallbackCopy(text));
+  }
+  function fallbackCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;';
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    ta.remove();
+    return ok;
+  }
+
+  $('#btn-sync-blogger').addEventListener('click', fetchBloggerPosts);
+  $('#btn-load-post').addEventListener('click', loadSelectedBloggerPost);
+  $('#blogger-select').addEventListener('change', function () {
+    if ($('#blogger-select').value !== '') loadSelectedBloggerPost();
+  });
+
+  $('#btn-fetch').addEventListener('click', fetchMal);
+  $('#mal-input').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); fetchMal(); } });
+  $('#btn-save-credits').addEventListener('click', saveDefaultCredits);
+
+  ALL_FIELDS.forEach(function (id) {
+    var f = $('#' + id);
+    if (!f) return;
+    f.addEventListener('input', function () { f.classList.remove('is-filled'); schedule(); });
+    f.addEventListener('change', schedule);
+  });
+  ['f-poster', 'f-banner'].forEach(function (id) {
+    var f = $('#' + id);
+    if (f) f.addEventListener('input', debounce(updateThumbs, 250));
+  });
+
+  $('#btn-trailer').addEventListener('click', function () {
+    if (!trailerThumb) return;
+    setField('f-banner', trailerThumb);
+    updateThumbs();
+    regenerate();
+    toast('Banner / thumbnail dipakai sebagai gambar 16:9');
+  });
+
+  $('#btn-copy').addEventListener('click', function () {
+    regenerate();
+    var d = collect();
+    copyText(lastHtml).then(function (ok) {
+      if (!ok) { toast('Gagal menyalin kode HTML.', 'error'); return; }
+      var btn = $('#btn-copy');
+      btn.textContent = 'Tersalin ✓';
+      setTimeout(function () { btn.textContent = 'Salin Kode HTML Blogger'; }, 1600);
+      toast(!d.title || !d.status ? 'Tersalin — periksa peringatan di panel Pemeriksaan' : 'Kode HTML Blogger tersalin');
+    });
+  });
+  $('#btn-copy-title').addEventListener('click', function () {
+    if (!lastTitle) { toast('Belum ada judul untuk disalin', 'error'); return; }
+    copyText(lastTitle).then(function (ok) {
+      toast(ok ? 'Judul postingan tersalin' : 'Gagal menyalin judul', ok ? 'info' : 'error');
+    });
+  });
+  $('#btn-copy-labels').addEventListener('click', function () {
+    if (!lastLabels.length) { toast('Belum ada label untuk disalin', 'error'); return; }
+    copyText(lastLabels.join(', ')).then(function (ok) {
+      toast(ok ? 'Label tersalin' : 'Gagal menyalin label', ok ? 'info' : 'error');
+    });
+  });
+
+  $('#btn-reset').addEventListener('click', function () {
+    if (!confirm('Mulai proyek baru? (Data anime dikosongkan, kredit default tetap dipertahankan)')) return;
+    ANIME_FIELDS.forEach(function (id) {
+      var f = $('#' + id);
+      if (!f) return;
+      f.value = f.tagName === 'SELECT' ? f.options[0].value : '';
+      f.classList.remove('is-filled');
+    });
+    rowsEl.innerHTML = '';
+    trailerThumb = '';
+    keyVisuals = [];
+    renderKvGallery([], '');
+    $('#btn-trailer').disabled = true;
+    $('#mal-id-note').textContent = 'MAL #—';
+    $('#blogger-select').value = '';
+    var linkBar = $('#post-link-bar');
+    if (linkBar) linkBar.hidden = true;
+    loadDefaultCredits();
+    setStatus('idle', 'Siap untuk proyek baru. Pilih postingan Blogger di 1A atau masukkan URL/ID MAL di 1B.');
+    updateThumbs();
+    regenerate();
+  });
+
+  if (load()) setStatus('idle', 'Draf terakhir dipulihkan dari penyimpanan lokal browser.');
+  updateThumbs();
+  regenerate();
+  fetchBloggerPosts();
+})();
+</script>
+</body>
+</html>
