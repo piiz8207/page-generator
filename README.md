@@ -1,2 +1,2 @@
-# page-generator
-Generator post Blogger otomatis berbasis metadata MyAnimeList/AniList dan sinkronisasi feed untuk Lorrainime
+# Page Generator
+Alat bantu internal berbasis web untuk mengelola rilisan anime di blog **Lorrainime Fansub**.
